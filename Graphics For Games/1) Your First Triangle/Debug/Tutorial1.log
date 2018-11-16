@@ -1,0 +1,6 @@
+﻿  tutorial1.cpp
+  Renderer.cpp
+  Generating Code...
+Renderer.obj : warning LNK4049: locally defined symbol ___glewUseProgram imported
+  Tutorial1.vcxproj -> C:\Users\b5005129\GitHub\CSC8502 Code 2018\Graphics For Games\Debug\Tutorial 01 - Your First Triangle.exe
+  Tutorial1.vcxproj -> C:\Users\b5005129\GitHub\CSC8502 Code 2018\Graphics For Games\Debug\Tutorial 01 - Your First Triangle.pdb (Partial PDB)
