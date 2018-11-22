@@ -214,7 +214,7 @@ bool	OBJMesh::LoadOBJMesh(std::string filename)	{
 				}
 			}
 
-#ifdef OBJ_USE_NORMALS
+
 			if(sm->normIndices.empty()) {
 				m->GenerateNormals();
 			}
@@ -225,10 +225,10 @@ bool	OBJMesh::LoadOBJMesh(std::string filename)	{
 					m->normals[j] = inputNormals[sm->normIndices[j]-1];
 				}
 			}
-#endif
-#ifdef OBJ_USE_TANGENTS_BUMPMAPS
+
+
 			m->GenerateTangents();
-#endif
+
 
 			m->BufferData();
 

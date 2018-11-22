@@ -1,8 +1,2 @@
-﻿  tutorial3.cpp
-  Renderer.cpp
-  Generating Code...
-Renderer.obj : warning LNK4049: locally defined symbol ___glewGetUniformLocation imported
-Renderer.obj : warning LNK4049: locally defined symbol ___glewUniform1i imported
-Renderer.obj : warning LNK4049: locally defined symbol ___glewUseProgram imported
-  Tutorial3.vcxproj -> C:\Users\b5005129\GitHub\CSC8502 Code 2018\Graphics For Games\Debug\Tutorial 03 - Texturing.exe
-  Tutorial3.vcxproj -> C:\Users\b5005129\GitHub\CSC8502 Code 2018\Graphics For Games\Debug\Tutorial 03 - Texturing.pdb (Partial PDB)
+﻿  Tutorial3.vcxproj -> C:\Users\b5005129\GitHub\CSC8502 Code 2018\GraphicsPoject\Graphics For Games\Debug\Tutorial 03 - Texturing.exe
+  Tutorial3.vcxproj -> C:\Users\b5005129\GitHub\CSC8502 Code 2018\GraphicsPoject\Graphics For Games\Debug\Tutorial 03 - Texturing.pdb (Partial PDB)

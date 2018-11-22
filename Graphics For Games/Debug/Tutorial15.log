@@ -1,0 +1,4 @@
+﻿  Renderer.cpp
+c:\users\b5005129\github\csc8502 code 2018\graphicspoject\graphics for games\15) deferred shading\renderer.cpp(30): error C2664: 'HeightMap::HeightMap(const HeightMap &)': cannot convert argument 1 from 'const char [27]' to 'const HeightMap &'
+  c:\users\b5005129\github\csc8502 code 2018\graphicspoject\graphics for games\15) deferred shading\renderer.cpp(30): note: Reason: cannot convert from 'const char [27]' to 'const HeightMap'
+  c:\users\b5005129\github\csc8502 code 2018\graphicspoject\graphics for games\15) deferred shading\renderer.cpp(30): note: No constructor could take the source type, or constructor overload resolution was ambiguous

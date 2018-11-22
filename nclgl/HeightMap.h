@@ -17,5 +17,5 @@
 
 class HeightMap : public Mesh {
 public:
-	HeightMap(std::string name);
-	~HeightMap(void) {};};
+	HeightMap(std::string name, int);
+	~HeightMap(void) {};	void UpdateMap();	float counter;	Vector3* getVertices() {		return vertices;	}};

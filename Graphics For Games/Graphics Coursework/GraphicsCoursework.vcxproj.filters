@@ -14,4 +14,43 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Shaders\PerPixelFragment.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\Shaders\PerPixelVertex.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\Shaders\reflectFragment.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\Shaders\skyboxFragment.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\Shaders\skyboxVertex.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\Shaders\magmaFragment.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\Shaders\TexturedVertex.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\Shaders\TexturedFragment.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
