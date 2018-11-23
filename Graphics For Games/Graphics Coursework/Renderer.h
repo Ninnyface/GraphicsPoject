@@ -28,6 +28,8 @@ protected:
 	void DrawMagma();
 	void DrawSkybox();
 	void DrawEntities();
+	void DrawShadowScene();
+	void DrawCombinedScene();
 
 	Shader * lightShader;
 	Shader * reflectShader;
@@ -55,6 +57,8 @@ protected:
 
 	Vector3* vertices;
 
+	Vector3 sunPos;
+
 	GLuint shadowFBO;
 	GLuint shadowTex;
 	GLuint magmaMap;
@@ -63,4 +67,7 @@ protected:
 
 	float rotate;
 	int currentScene;
-	bool moveAlien;	int moveCounter;};
+
+	bool moveAlien;
+	int moveCounter;
+};

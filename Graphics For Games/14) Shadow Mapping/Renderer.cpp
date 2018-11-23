@@ -33,13 +33,16 @@ Renderer::Renderer(Window & parent) : OGLRenderer(parent) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE,
 			GL_COMPARE_R_TO_TEXTURE);
 	
-	glBindTexture(GL_TEXTURE_2D, 0);	glGenFramebuffers(1, &shadowFBO);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glGenFramebuffers(1, &shadowFBO);
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
 		GL_TEXTURE_2D, shadowTex, 0);
 	glDrawBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);		floor = Mesh::GenerateQuad();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	
+	floor = Mesh::GenerateQuad();
 	floor -> SetTexture(SOIL_load_OGL_texture(TEXTUREDIR "brick.tga"
 		, SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
 	floor -> SetBumpMap(SOIL_load_OGL_texture(TEXTUREDIR "brickDOT3.tga"
@@ -51,7 +54,10 @@ Renderer::Renderer(Window & parent) : OGLRenderer(parent) {
 			(float)width / (float)height, 45.0f);
 	
 	init = true;
-	}Renderer ::~Renderer(void) {
+	
+}
+
+Renderer ::~Renderer(void) {
 	glDeleteTextures(1, &shadowTex);
 	glDeleteFramebuffers(1, &shadowFBO);
 	delete camera;
@@ -77,7 +83,10 @@ void Renderer::RenderScene() {
 	DrawCombinedScene(); // Second render pass ...
 
 	SwapBuffers();
-	}void Renderer::DrawShadowScene() {
+	
+}
+
+void Renderer::DrawShadowScene() {
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 	
 	glClear(GL_DEPTH_BUFFER_BIT);
@@ -86,13 +95,16 @@ void Renderer::RenderScene() {
 	
 	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 	
-	SetCurrentShader(shadowShader);	viewMatrix = Matrix4::BuildViewMatrix(
+	SetCurrentShader(shadowShader);
+
+	viewMatrix = Matrix4::BuildViewMatrix(
 		light -> GetPosition(), Vector3(0, 0, 0));
 	textureMatrix = biasMatrix *(projMatrix * viewMatrix);
 	
 	UpdateShaderMatrices();
 	
-	DrawFloor();	DrawMesh();
+	DrawFloor();
+	DrawMesh();
 	
 	glUseProgram(0);
 	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -124,7 +136,10 @@ void Renderer::DrawCombinedScene() {
 	DrawMesh();
 	
 	glUseProgram(0);
-	}void Renderer::DrawMesh() {
+	
+}
+
+void Renderer::DrawMesh() {
 	modelMatrix.ToIdentity();
 	
 	Matrix4 tempMatrix = textureMatrix * modelMatrix;

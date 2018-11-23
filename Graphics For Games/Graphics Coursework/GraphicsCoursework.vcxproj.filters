@@ -52,5 +52,17 @@
     <None Include="..\..\Shaders\TexturedFragment.glsl">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\..\Shaders\shadowFrag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\Shaders\shadowscenefrag.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\Shaders\shadowscenevert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\Shaders\shadowVert.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -14,6 +14,7 @@
     <ProjectGuid>{9D4EB641-9F16-458C-AA69-448DA2C2464E}</ProjectGuid>
     <RootNamespace>Tutorial1</RootNamespace>
     <ProjectName>Tutorial 10 - Post Processing</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

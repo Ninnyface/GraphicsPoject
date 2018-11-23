@@ -31,4 +31,4 @@ protected:
 	GLuint processFBO;
 	GLuint bufferColourTex[2];
 	GLuint bufferDepthTex;
-};
+};

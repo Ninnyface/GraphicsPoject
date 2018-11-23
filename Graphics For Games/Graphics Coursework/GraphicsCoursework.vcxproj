@@ -22,6 +22,10 @@
     <None Include="..\..\Shaders\PerPixelFragment.glsl" />
     <None Include="..\..\Shaders\PerPixelVertex.glsl" />
     <None Include="..\..\Shaders\reflectFragment.glsl" />
+    <None Include="..\..\Shaders\shadowFrag.glsl" />
+    <None Include="..\..\Shaders\shadowscenefrag.glsl" />
+    <None Include="..\..\Shaders\shadowscenevert.glsl" />
+    <None Include="..\..\Shaders\shadowVert.glsl" />
     <None Include="..\..\Shaders\skyboxFragment.glsl" />
     <None Include="..\..\Shaders\skyboxVertex.glsl" />
     <None Include="..\..\Shaders\TexturedFragment.glsl" />
@@ -30,6 +34,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{909A2CFC-6E55-4776-8B60-93B44103A9CF}</ProjectGuid>
     <RootNamespace>Coursework</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

@@ -1,7 +1,7 @@
 #include "Renderer.h"
 
 Renderer::Renderer(Window & parent) : OGLRenderer(parent) {
-	currentScene = 2;
+	currentScene = 0;
 	camera = new Camera();
 	heightMap = new HeightMap(TEXTUREDIR "terrain.raw", 0);
 	quad = Mesh::GenerateQuad();
@@ -24,9 +24,9 @@ Renderer::Renderer(Window & parent) : OGLRenderer(parent) {
 	hellData->AddAnim(MESHDIR"idle2.md5anim");
 	hellNode->PlayAnim(MESHDIR"idle2.md5anim");
 
-	//camera->SetPosition(Vector3(RAW_WIDTH * HEIGHTMAP_X / 2.0f,
-	//	5000.0f, RAW_WIDTH * HEIGHTMAP_X));
-	camera->SetPosition(Vector3(0,0,0));
+	camera->SetPosition(Vector3(RAW_WIDTH * HEIGHTMAP_X / 2.0f,
+		5000.0f, RAW_WIDTH * HEIGHTMAP_X));
+	
 
 
 	light = new Light(Vector3((RAW_HEIGHT * HEIGHTMAP_X / 2.0f), 500.0f,
@@ -56,7 +56,10 @@ Renderer::Renderer(Window & parent) : OGLRenderer(parent) {
 		!magmaShader->LinkProgram() || !reflectShader->LinkProgram() || 
 		!lightShader->LinkProgram() || !skyboxShader->LinkProgram()) {
 		return;
-	}	glGenTextures(1, &shadowTex);
+
+	}
+
+	glGenTextures(1, &shadowTex);
 	glBindTexture(GL_TEXTURE_2D, shadowTex);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -68,22 +71,36 @@ Renderer::Renderer(Window & parent) : OGLRenderer(parent) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE,
 		GL_COMPARE_R_TO_TEXTURE);
 
-	glBindTexture(GL_TEXTURE_2D, 0);	glGenFramebuffers(1, &shadowFBO);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glGenFramebuffers(1, &shadowFBO);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
 		GL_TEXTURE_2D, shadowTex, 0);
 	glDrawBuffer(GL_NONE);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);	beachBall->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR "ball.jpg",
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	beachBall->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR "ball.jpg",
 		SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
-	planet->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR "Barren Reds.jpg",
-		SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));	planet->SetBumpMap(SOIL_load_OGL_texture(
+
+	planet->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR "Barren Reds.jpg",
+		SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
+
+	planet->SetBumpMap(SOIL_load_OGL_texture(
 		TEXTUREDIR "Barren RedsDOT3.JPG", SOIL_LOAD_AUTO,
-		SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));	planet2->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR "water.jpg",
-		SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));	planet2->SetBumpMap(SOIL_load_OGL_texture(
+		SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
+
+	planet2->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR "water.jpg",
+		SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
+
+	planet2->SetBumpMap(SOIL_load_OGL_texture(
 		TEXTUREDIR "waterbump.JPG", SOIL_LOAD_AUTO,
-		SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));	sun->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR "sun.jpg",
-		SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));	quad->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR "magma.jpg",
+		SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
+
+	sun->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR "sun.jpg",
+		SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
+
+	quad->SetTexture(SOIL_load_OGL_texture(TEXTUREDIR "magma.jpg",
 		SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS));
 
 	heightMap->SetTexture(SOIL_load_OGL_texture(
@@ -126,7 +143,9 @@ Renderer::Renderer(Window & parent) : OGLRenderer(parent) {
 	SetTextureRepeating(beachBall->GetTexture(), true);
 	SetTextureRepeating(quad->GetTexture(), true);
 	SetTextureRepeating(heightMap->GetTexture(), true);
-	SetTextureRepeating(heightMap->GetBumpMap(), true);	init = true;
+	SetTextureRepeating(heightMap->GetBumpMap(), true);
+
+	init = true;
 	rotate = 0.0f;
 	
 
@@ -136,7 +155,11 @@ Renderer::Renderer(Window & parent) : OGLRenderer(parent) {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);}Renderer ::~Renderer(void) {
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
+}
+
+Renderer ::~Renderer(void) {
 	delete camera;
 	delete hellData;
 	delete hellNode;
@@ -164,62 +187,227 @@ void Renderer::UpdateScene(float msec) {
 	camera->UpdateCamera(msec);
 	viewMatrix = camera->BuildViewMatrix();
 	hellNode->Update(msec);
-	rotate += msec / 2000.0f;}void Renderer::RenderScene() {
+	rotate += msec / 2000.0f;
+}
+
+void Renderer::RenderScene() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	DrawSkybox();
 
 	//magma
 	if (currentScene == 0) {
-		DrawMagmaMap();
-		DrawMagma();
+		//DrawMagmaMap();
+		//DrawMagma();
+		DrawShadowScene();
+		DrawCombinedScene();
 	}
 	//if sea
 	else if (currentScene == 1) {
-		DrawSeaMap();
+		//DrawSeaMap();
 		heightMap->UpdateMap();
+		//DrawEntities();
+		DrawShadowScene();
+		DrawCombinedScene();
 	}
 	//if space
 	else {
-		DrawSpaceMap();
+		//DrawSpaceMap();
+		//DrawEntities();
+		SetCurrentShader(planetShader);
+		modelMatrix = Matrix4::Translation(Vector3(vertices[33025]))
+			* Matrix4::Rotation(rotate * 4, Vector3(1, 0, 0))
+			* Matrix4::Translation(Vector3(0, 50000, 0))
+			* Matrix4::Rotation(rotate * 4, Vector3(-1, 0, 0))
+			* Matrix4::Rotation(rotate * 10, Vector3(0, 1, 0))
+			* Matrix4::Scale(Vector3(500, 500, 500));
+		sunPos = modelMatrix.GetPositionVector();
+		light->SetPosition(sunPos);
+		UpdateShaderMatrices();
+		sun->Draw();
+		DrawShadowScene();
+		DrawCombinedScene();
 	}
-	DrawEntities();
+	
 	
 
-	SwapBuffers();}void Renderer::DrawEntities() {	SetCurrentShader(objShader);	SetShaderLight(*light);	
+	SwapBuffers();
+}
+
+void Renderer::DrawShadowScene() {
+	glBindFramebuffer(GL_FRAMEBUFFER, shadowFBO);
+
+	glClear(GL_DEPTH_BUFFER_BIT);
+
+	glViewport(0, 0, SHADOWSIZE, SHADOWSIZE);
+
+	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+	SetCurrentShader(shadowShader);
+	viewMatrix = Matrix4::BuildViewMatrix(light->GetPosition(), 
+		vertices[37130]);
+	textureMatrix = biasMatrix * (projMatrix*viewMatrix);
+	UpdateShaderMatrices();
+	if (currentScene == 0) {
+		DrawMagmaMap();
+		DrawMagma();
+		DrawEntities();
+	}
+	else if (currentScene == 1) {
+		DrawSeaMap();
+		DrawEntities();
+	}
+	else {
+		DrawSpaceMap();
+		DrawEntities();
+	}
+	glUseProgram(0);
+	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+	glViewport(0, 0, width, height);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Renderer::DrawCombinedScene() {
+	SetCurrentShader(sceneShader);
+	glUniform1i(glGetUniformLocation(currentShader -> GetProgram(),
+		"diffuseTex"), 0);
+	glUniform1i(glGetUniformLocation(currentShader -> GetProgram(),
+		"bumpTex"), 1);
+	glUniform1i(glGetUniformLocation(currentShader -> GetProgram(),
+		"shadowTex"), 2);
+	glUniform3fv(glGetUniformLocation(currentShader -> GetProgram(),
+		"cameraPos"), 1, (float *)& camera -> GetPosition());
+	
+	SetShaderLight(*light);
+	
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, shadowTex);
+	
+	viewMatrix = camera -> BuildViewMatrix();
+	UpdateShaderMatrices();
 	
 	if (currentScene == 0) {
+		DrawMagmaMap();
+		DrawMagma();
+		DrawEntities();
+	}
+	else if (currentScene == 1) {
+		DrawSeaMap();
+		DrawEntities();
+	}
+	else {
+		DrawSpaceMap();
+		DrawEntities();
+	}
+
+	glUseProgram(0);
+}
+
+void Renderer::DrawEntities() {
+	
+	if (currentScene == 0) {	
+		/*SetShaderLight(*light);
 		glUniform3fv(glGetUniformLocation(currentShader->GetProgram(),
 			"cameraPos"), 1, (float *)& camera->GetPosition());
+		glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
+			"diffuseTex"), 0);	*/
 
-		glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
-			"diffuseTex"), 0);
-		glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
-			"bumpTex"), 1);
+		modelMatrix = Matrix4::Translation(Vector3(vertices[33025]))
+			* Matrix4::Rotation(rotate * 30, Vector3(0, 1, 0))
+			* Matrix4::Translation(Vector3(0, 1000, (RAW_HEIGHT * HEIGHTMAP_Z)));
+		light->SetPosition(modelMatrix.GetPositionVector());
+
 		if (moveAlien) {
 			moveCounter += 3;
 			modelMatrix = Matrix4::Translation(Vector3(vertices[(moveCounter / 277) * 8]))* Matrix4::Rotation(90, Vector3(0, 1, 0));
 		}
 		else {
-			modelMatrix = Matrix4::Translation(Vector3(vertices[20000])) * Matrix4::Rotation(40, Vector3(0, 1, 0));
+			//modelMatrix = Matrix4::Translation(Vector3(vertices[33025]));
+
+
+			modelMatrix = Matrix4::Translation(Vector3(vertices[37130])) * Matrix4::Rotation(40, Vector3(0, 1, 0));
 		}
-		UpdateShaderMatrices();		hellNode->Draw(*this);	}	else if (currentScene == 1) {				glUniform3fv(glGetUniformLocation(currentShader->GetProgram(),
-			"cameraPos"), 1, (float *)& camera->GetPosition());
+		//UpdateShaderMatrices();
+		Matrix4 tempMatrix = textureMatrix * modelMatrix;
+		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+			, "textureMatrix"), 1, false, *& tempMatrix.values);
 
-		glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
-			"diffuseTex"), 0);
+		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+			, "modelMatrix"), 1, false, *& modelMatrix.values);
 
-		glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
-			"bumpTex"), 1);		modelMatrix = Matrix4::Translation(Vector3(vertices[33025])) 			* Matrix4::Rotation(rotate * 30, Vector3(0, 1, 0))			* Matrix4::Translation(Vector3(2000, 100, 0));		light->SetPosition(modelMatrix.GetPositionVector());		for (int i = 22; i <= 42; i += 10) {			modelMatrix = Matrix4::Translation(Vector3(vertices[i*1000].x, vertices[i*1000].y + 50, vertices[i*1000].z)) * Matrix4::Rotation(10*i + (rotate * 10), Vector3(1, 1, 0)) * Matrix4::Scale(Vector3(10, 10, 10));
+		hellNode->Draw(*this);
+	}
+	else if (currentScene == 1) {
+		modelMatrix = Matrix4::Translation(Vector3(vertices[33025]))
+			* Matrix4::Rotation(rotate * 30, Vector3(0, 1, 0))
+			* Matrix4::Translation(Vector3(4000, 200, 0));
+		light->SetPosition(modelMatrix.GetPositionVector());
+		
+		for (int i = 22; i <= 42; i += 10) {
+			modelMatrix = Matrix4::Translation(Vector3(vertices[i*1000].x, vertices[i*1000].y + 50, vertices[i*1000].z)) * Matrix4::Rotation(10*i + (rotate * 10), Vector3(1, 1, 0)) * Matrix4::Scale(Vector3(10, 10, 10));
+			
+			Matrix4 tempMatrix = textureMatrix * modelMatrix;
+			glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+				, "textureMatrix"), 1, false, *& tempMatrix.values);
 
-			UpdateShaderMatrices();
-			beachBall->Draw();		}	}	else {		glUseProgram(0);		SetCurrentShader(planetShader);		modelMatrix = Matrix4::Translation(Vector3(vertices[33025]))				* Matrix4::Rotation(rotate * 4, Vector3(1, 0, 0))				* Matrix4::Translation(Vector3(0, 50000, 0))				* Matrix4::Rotation(rotate * 4, Vector3(-1, 0, 0))				* Matrix4::Rotation(rotate * 10, Vector3(0, 1, 0))				* Matrix4::Scale(Vector3(500,500,500));		Vector3 sunPos = modelMatrix.GetPositionVector();		light->SetPosition(sunPos);		UpdateShaderMatrices();		sun->Draw();		SetCurrentShader(lightShader);		SetShaderLight(*light);		
-		glUniform3fv(glGetUniformLocation(currentShader->GetProgram(),
-			"cameraPos"), 1, (float *)& camera->GetPosition());
+			glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+				, "modelMatrix"), 1, false, *& modelMatrix.values);
 
-		glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
-			"diffuseTex"), 0);
-		glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
-			"bumpTex"), 1);		modelMatrix = Matrix4::Translation(Vector3(sunPos))			* Matrix4::Rotation(rotate*40, Vector3(1,0,0))			* Matrix4::Translation(Vector3(0, -25000, 0))			* Matrix4::Rotation(rotate * 40, Vector3(-1, 0, 0))			* Matrix4::Rotation(rotate * 20, Vector3(0, 1, 0))			* Matrix4::Scale(Vector3(100, 100, 100));				UpdateShaderMatrices();		planet->Draw();		modelMatrix = Matrix4::Translation(Vector3(sunPos))						* Matrix4::Rotation(rotate * 30, Vector3(1, 0, -1))			* Matrix4::Translation(Vector3(0, -35000, 0))			* Matrix4::Scale(Vector3(100, 100, 100));		UpdateShaderMatrices();		planet2->Draw();	}	glUseProgram(0);}void Renderer::MoveAlien() {	moveAlien = !moveAlien;	if (moveAlien) {		hellNode->PlayAnim(MESHDIR"walk7.md5anim");	}	else {		hellNode->PlayAnim(MESHDIR"idle2.md5anim");	}	moveCounter = 0;}void Renderer::DrawSkybox() {
+			//UpdateShaderMatrices();
+			beachBall->Draw();
+		}
+	}
+	else {
+		
+
+		modelMatrix = Matrix4::Translation(Vector3(sunPos))
+			* Matrix4::Rotation(rotate*40, Vector3(1,0,0))
+			* Matrix4::Translation(Vector3(0, -25000, 0))
+			* Matrix4::Rotation(rotate * 40, Vector3(-1, 0, 0))
+			* Matrix4::Rotation(rotate * 20, Vector3(0, 1, 0))
+			* Matrix4::Scale(Vector3(100, 100, 100));
+		
+		Matrix4 tempMatrix = textureMatrix * modelMatrix;
+		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+			, "textureMatrix"), 1, false, *& tempMatrix.values);
+
+		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+			, "modelMatrix"), 1, false, *& modelMatrix.values);
+
+		//UpdateShaderMatrices();
+		
+		planet->Draw();
+
+		modelMatrix = Matrix4::Translation(Vector3(sunPos))	
+			* Matrix4::Rotation(rotate * 30, Vector3(1, 0, -1))
+			* Matrix4::Translation(Vector3(0, -35000, 0))
+			* Matrix4::Scale(Vector3(100, 100, 100));
+
+		tempMatrix = textureMatrix * modelMatrix;
+		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+			, "textureMatrix"), 1, false, *& tempMatrix.values);
+
+		glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+			, "modelMatrix"), 1, false, *& modelMatrix.values);
+
+		planet2->Draw();
+
+	}
+	glUseProgram(0);
+}
+
+void Renderer::MoveAlien() {
+	moveAlien = !moveAlien;
+	if (moveAlien) {
+		hellNode->PlayAnim(MESHDIR"walk7.md5anim");
+	}
+	else {
+		hellNode->PlayAnim(MESHDIR"idle2.md5anim");
+	}
+	moveCounter = 0;
+}
+
+void Renderer::DrawSkybox() {
 
 	glDepthMask(GL_FALSE);
 	SetCurrentShader(skyboxShader);
@@ -251,29 +439,24 @@ void Renderer::UpdateScene(float msec) {
 }
 
 void Renderer::DrawSpaceMap() {
-	SetCurrentShader(lightShader);
-	SetShaderLight(*light);
-
-	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(),
-		"cameraPos"), 1, (float *)& camera->GetPosition());
-
-	glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
-		"diffuseTex"), 0);
-	glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
-		"bumpTex"), 1);
-
+	
 	modelMatrix.ToIdentity();
-	textureMatrix.ToIdentity();
 
-	UpdateShaderMatrices();
+	Matrix4 tempMatrix = textureMatrix * modelMatrix;
+	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+		, "textureMatrix"), 1, false, *& tempMatrix.values);
+
+	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+		, "modelMatrix"), 1, false, *& modelMatrix.values);
 
 	heightMap->Draw();
+	
 
-	glUseProgram(0);
+	
 }
 
 void Renderer::DrawSeaMap() {
-	SetCurrentShader(lightShader);
+	/*SetCurrentShader(lightShader);
 	SetShaderLight(*light);
 
 	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(),
@@ -297,11 +480,23 @@ void Renderer::DrawSeaMap() {
 
 	heightMap->Draw();
 
-	glUseProgram(0);
-}
+	glUseProgram(0);*/
+
+	modelMatrix.ToIdentity();
+	
+	Matrix4 tempMatrix = textureMatrix * modelMatrix;
+	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+		, "textureMatrix"), 1, false, *& tempMatrix.values);
+
+	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+		, "modelMatrix"), 1, false, *& modelMatrix.values);
+
+	heightMap->Draw();
+
+}
 
 void Renderer::DrawMagmaMap() {
-	SetCurrentShader(lightShader);
+	/*SetCurrentShader(lightShader);
 	SetShaderLight(*light);
 
 	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(),
@@ -319,41 +514,46 @@ void Renderer::DrawMagmaMap() {
 
 	heightMap->Draw();
 
-	glUseProgram(0);
-}void Renderer::DrawMagma() {
-	SetCurrentShader(magmaShader);
-	SetShaderLight(*light);
-	glUniform3fv(glGetUniformLocation(currentShader->GetProgram(),
-		"cameraPos"), 1, (float *)& camera->GetPosition());
+	glUseProgram(0);*/
+	modelMatrix.ToIdentity();
+	//textureMatrix.ToIdentity();
+	Matrix4 tempMatrix = textureMatrix * modelMatrix;
+	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+		, "textureMatrix"), 1, false, *& tempMatrix.values);
 
-	glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
-		"diffuseTex"), 0);
+	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+		, "modelMatrix"), 1, false, *& modelMatrix.values);
 
-	glUniform1i(glGetUniformLocation(currentShader->GetProgram(),
-		"cubeTex"), 2);
+	heightMap->Draw();
+}
 
+void Renderer::DrawMagma() {
 	
 	float heightX = (RAW_WIDTH * HEIGHTMAP_X / 2.0f);
 
 	float heightY = 200 * HEIGHTMAP_Y / 3.0f;
 
 	float heightZ = (RAW_HEIGHT * HEIGHTMAP_Z / 2.0f);
-
+	
 	modelMatrix =
 		Matrix4::Translation(Vector3(heightX, heightY, heightZ)) *
 		Matrix4::Scale(Vector3(heightX, 1, heightZ)) *
 		Matrix4::Rotation(90, Vector3(1.0f, 0.0f, 0.0f));
+	
+	//textureMatrix = Matrix4::Scale(Vector3(10.0f, 10.0f, 10.0f)) *
+	//	Matrix4::Rotation(rotate, Vector3(0.0f, 0.0f, 1.0f));
 
-	textureMatrix = Matrix4::Scale(Vector3(10.0f, 10.0f, 10.0f)) *
-		Matrix4::Rotation(rotate, Vector3(0.0f, 0.0f, 1.0f));
+	Matrix4 tempMatrix = textureMatrix * modelMatrix;
+	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+		, "textureMatrix"), 1, false, *& tempMatrix.values);
 
-	UpdateShaderMatrices();
+	glUniformMatrix4fv(glGetUniformLocation(currentShader->GetProgram()
+		, "modelMatrix"), 1, false, *& modelMatrix.values);
 
 	quad->Draw();
 
-	glUseProgram(0);
+}
 
-}
 void Renderer::ChangeScene(int x) {
 	currentScene += x;
 	if (currentScene < 0) {
@@ -368,10 +568,10 @@ void Renderer::ChangeScene(int x) {
 		heightMap = new HeightMap(TEXTUREDIR "terrain.raw", 0);
 
 		delete light;
-		light = new Light(Vector3((RAW_HEIGHT * HEIGHTMAP_X / 2.0f), 500.0f,
-			(RAW_HEIGHT * HEIGHTMAP_Z / 2.0f)),
+		light = new Light(Vector3((RAW_HEIGHT * HEIGHTMAP_X / 2.0f), 1000.0f,
+			(RAW_HEIGHT * HEIGHTMAP_Z)*1.5f),
 			Vector4(0.9f, 0.9f, 1.0f, 1),
-			(RAW_WIDTH * HEIGHTMAP_X));
+			(RAW_WIDTH * HEIGHTMAP_X)*4);
 
 		vertices = heightMap->getVertices();
 
@@ -391,9 +591,6 @@ void Renderer::ChangeScene(int x) {
 
 		SetTextureRepeating(heightMap->GetTexture(), true);
 		SetTextureRepeating(heightMap->GetBumpMap(), true);
-	
-		//glBindTexture(GL_TEXTURE_CUBE_MAP, magmaMap);
-		//skyBox->SetTexture(magmaMap);
 	}
 	else if (currentScene == 1) {
 
@@ -404,7 +601,8 @@ void Renderer::ChangeScene(int x) {
 		light = new Light(Vector3((RAW_HEIGHT * HEIGHTMAP_X / 2.0f), 2000.0f,
 			(RAW_HEIGHT * HEIGHTMAP_Z / 2.0f)),
 			Vector4(0.9f, 0.9f, 1.0f, 1),
-			(RAW_WIDTH * HEIGHTMAP_X));
+			(RAW_WIDTH * HEIGHTMAP_X)*1.5f);
+
 
 		vertices = heightMap->getVertices();
 
@@ -424,9 +622,6 @@ void Renderer::ChangeScene(int x) {
 	
 		SetTextureRepeating(heightMap->GetTexture(), true);
 		SetTextureRepeating(heightMap->GetBumpMap(), true);
-	
-		//glBindTexture(GL_TEXTURE_CUBE_MAP, waterMap);
-		
 	}
 	else {
 
@@ -438,6 +633,7 @@ void Renderer::ChangeScene(int x) {
 			(RAW_HEIGHT * HEIGHTMAP_Z / 2.0f)+5000),
 			Vector4(0.9f, 0.9f, 1.0f, 1),
 			100000);
+
 
 		vertices = heightMap->getVertices();
 

@@ -30,4 +30,4 @@ void main(void) {
 		vec4 tmp = texture2D(diffuseTex, IN.texCoord.xy + values[i]);
 		fragColour += tmp * weights[i];
 	}
-}
+}
